@@ -15,7 +15,21 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+from adminServ.views import *
+from adminServ import settings
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
+   path('login/', login),
+   path('', login),
+   path('bienvenida_admin/', bienvenida_admin, name='bienvenida_admin'),
+   path('multifactor/', multifactor, name='multifactor'),
+   path('%sregistro_administradores/' % settings.PATH_PREFIX, registro_administradores, name='registro_administradores'),
+   path('%sregistro_servidores/' % settings.PATH_PREFIX, registro_servidores, name='registro_servidores'),
+   path('%sasociarAS/' % settings.PATH_PREFIX, asociarAS, name='asociarAS'),
+   path('%slogout/' % settings.PATH_PREFIX, logout, name='logout'),
+   path('multifactorA/', multifactorA, name='multifactorA'),
+   path('bienvenida_adminA/', bienvenida_adminA, name='bienvenida_adminA'),
+   path('%sstatus_server/' % settings.PATH_PREFIX, status_server, name='status_server'),
+   path('%sserver_connect/' % settings.PATH_PREFIX, server_connect, name='server_connect'),
+   path('%slogoutA/' % settings.PATH_PREFIX, logoutA, name='logoutA'),
 ]
