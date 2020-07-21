@@ -1,0 +1,40 @@
+h1 {
+        text-align: center;
+        font-family: 'Monoton', cursive;
+	font-size: 60px;
+        color: rgba(255,255,255);
+	position: absolute;
+	top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+}
+
+#bienvenida {
+	height: 95vh;
+	weidth: 100%; 
+	background-image: url("/static/imgs/inicioAdmin8.gif");
+	color: white;
+	background-color: rgb(71,99,127);
+	opacity: 0.9;
+}
+
+#titulo {
+	border-radius: 50px;
+	background-color: rgb(50,50,50);
+	opacity: 0.5;
+	padding: 20px;
+}
+
+#btnNegro {
+    background-color: rgb(51,51,51);
+}
+
+.row::after {
+    content: "";
+    clear: both;
+    display: block;
+}
+ 
+.row{
+    padding: 5px;
+}
