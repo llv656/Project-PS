@@ -1,0 +1,20 @@
+<form method="POST" action="/registro_administradores/">
+        {% csrf_token %}
+        <div class="registro">
+                <fieldset  class="col-xs-8" style="background-color:rgba(34,53,72,0.60); padding:15px;">
+                        <legend class="tituloRegistro">Asociacion</legend>
+                        <div class="alert alert-danger" id="errorA" style="display: none"></div>
+                        <div class="form-group" style="padding:12px">
+                                <label class="regis">Usuario Administrador:</label>
+                                <input type="text" class="form-control" name="usuario" placeholder="usuario">
+                        </div>
+                        <div class="form-group" style="padding:12px">
+                                <label class="regis">IP Servidor:</label>
+                                <input type="text" class="form-control" name="IP" placeholder="IP">
+                        </div>
+                        <div style="padding:12px">
+                                <button type="submit" id="btnCrear" class="btn btn-success">Asociar</button>
+                        </div>
+                </fieldset>
+        </div>
+</form>
