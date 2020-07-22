@@ -1,0 +1,52 @@
+{% extends 'adminS/baseAdminSERV.html' %}
+
+{% load static %}
+{% block titulo %}Bienvenida Admin SERV{% endblock %}
+
+{% block estilos %}
+<link rel="stylesheet" href="/static/css/adminS/bienvenidaAdmin.css">
+{% endblock %}
+
+
+{% block area %}
+{% if bienvenida_adminS %}
+<div class="jumbotron" id="bienvenida">
+	<header><h1><span id="titulo">Bienvenido Admin</span></h1></header>
+</div>
+{% endif %}
+{% if status_server %}
+<div class="jumbotron" id="status_server">
+        {% include 'admin/status.html' %}
+</div>
+{% endif %} 
+{% if server_connect %}
+<div class="jumbotron" id="server_connect">
+        {% include 'admin/connect.html' %}
+</div>
+{% endif %}
+{% endblock %}
+
+
+{% block contenido %}
+<nav class="navbar navbar-inverse navbar-fixed-bottom">
+	<div class="container-fluid">
+		<div class="navbar-header">
+			<div class="btn-group dropup">
+				<a type="button" class="btn btn-link navbar-brand" role="button" href="{% url 'bienvenida_adminA' %}">SSA</a>&nbsp;&nbsp;&nbsp;&nbsp;
+				<button type="button" class="btn btn-primary btn-lg dropdown-toggle" id="btnNegro" data-toggle="dropdown" style="border-color:rgb(51,51,51);">
+					<span class="caret"></span>
+				</button>
+				<ul class="dropdown-menu" role="menu" style="background-color:rgba(255,255,255,0.0);">
+					<li><button type="button" class="btn btn-primary btn-block" id="perfil">Editar perfil</btn></li>
+					<li><a class="btn btn-danger btn-block" role="button" href="{% url 'logoutA' %}" id="salir">Salir</a></li>
+				</ul>
+			</div>
+		</div>
+		<ul class="nav navbar-nav">
+			<li><a class="btn btn-link navbar-brand" role="button" href="{% url 'status_server' %}" id="admin"><span class="glyphicon glyphicon-object-align-horizontal"></span> Status servidor(es)</a></li>
+			<li><a class="btn btn-link navbar-brand" role="button" href="{% url 'server_connect' %}" id="server"><span class="glyphicon glyphicon-console"></span> Server connect</a></li>
+		</ul>
+	</div>
+
+</nav>    
+{% endblock %}
