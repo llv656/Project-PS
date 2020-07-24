@@ -19,8 +19,8 @@ from service_adminServ.views import *
 from rest_framework.authtoken import views
 
 urlpatterns = [
-    path('servidores_monitor/', servidores_monitor),
+    path('servers_admin/', servers_admin),
     path('autenticacion/', views.obtain_auth_token),
-    path('server_recordAPI/', server_recordAPI),
+    path('asociar_API/', asociar_API),
     path('admin_recordAPI/', admin_recordAPI),
 ]
