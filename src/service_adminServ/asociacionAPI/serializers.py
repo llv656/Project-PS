@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import *
+from asociacionAPI.models import *
 
 class AdminSerializer(serializers.ModelSerializer):
 	servers = serializers.StringRelatedField(many=True)
