@@ -29,7 +29,5 @@ urlpatterns = [
    path('%slogout/' % settings.PATH_PREFIX, logout, name='logout'),
    path('multifactorA/', multifactorA, name='multifactorA'),
    path('bienvenida_adminA/', bienvenida_adminA, name='bienvenida_adminA'),
-   path('%sstatus_server/' % settings.PATH_PREFIX, status_server, name='status_server'),
-   path('%sserver_connect/' % settings.PATH_PREFIX, server_connect, name='server_connect'),
    path('%slogoutA/' % settings.PATH_PREFIX, logoutA, name='logoutA'),
 ]

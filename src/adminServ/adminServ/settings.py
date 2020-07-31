@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 """
 
 import os
+import base64
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -18,6 +19,11 @@ VENTANA_TIEMPO_INTENTOS_LOGIN = 60
 INTENTOS_LOGIN = 5
 SECRET_USRM = os.environ.get('SECRET_USRM')
 SECRET_PASSM = os.environ.get('SECRET_PASSM')
+
+URL_SERVICE = base64.b64decode(os.environ.get('SECRET_URL_SERVICE')).decode('utf-8')
+USR_SERVICE = os.environ.get('SECRET_USR_SERVICE')
+PASS_SERVICE = os.environ.get('SECRET_PASS_SERVICE')
+
 PATH_PREFIX = os.environ.get('PATH_PREFIX', '')
 if PATH_PREFIX and not PATH_PREFIX.endswith('/'):
     PATH_PREFIX += '/'

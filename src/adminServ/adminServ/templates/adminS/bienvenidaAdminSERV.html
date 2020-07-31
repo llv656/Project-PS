@@ -9,21 +9,14 @@
 
 
 {% block area %}
-{% if bienvenida_adminS %}
-<div class="jumbotron" id="bienvenida">
+{% for monitor in monitor_servers %}
+	<p>PROCESADOR : {{ monitor.procesador }}</p>
+	<p>MEMORIA: {{ monitor.memoria }}</p>
+	<p>DISCO: {{ monitor.disco }}
+{% endfor %}
+<!--<div class="jumbotron" id="bienvenida">
 	<header><h1><span id="titulo">Bienvenido Admin</span></h1></header>
-</div>
-{% endif %}
-{% if status_server %}
-<div class="jumbotron" id="status_server">
-        {% include 'admin/status.html' %}
-</div>
-{% endif %} 
-{% if server_connect %}
-<div class="jumbotron" id="server_connect">
-        {% include 'admin/connect.html' %}
-</div>
-{% endif %}
+</div>-->
 {% endblock %}
 
 
@@ -42,11 +35,12 @@
 				</ul>
 			</div>
 		</div>
-		<ul class="nav navbar-nav">
-			<li><a class="btn btn-link navbar-brand" role="button" href="{% url 'status_server' %}" id="admin"><span class="glyphicon glyphicon-object-align-horizontal"></span> Status servidor(es)</a></li>
-			<li><a class="btn btn-link navbar-brand" role="button" href="{% url 'server_connect' %}" id="server"><span class="glyphicon glyphicon-console"></span> Server connect</a></li>
-		</ul>
 	</div>
 
 </nav>    
 {% endblock %}
+
+<!--            <ul class="nav navbar-nav">
+                        <li><a class="btn btn-link navbar-brand" role="button" href="{% url 'status_server' %}" id="admin"><span class="glyphicon glyphicon-object-align-horizonta$
+                        <li><a class="btn btn-link navbar-brand" role="button" href="{% url 'server_connect' %}" id="server"><span class="glyphicon glyphicon-console"></span> Ser$
+                </ul>-->
