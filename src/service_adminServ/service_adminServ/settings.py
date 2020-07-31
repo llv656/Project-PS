@@ -22,7 +22,9 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = base64.b64decode(os.environ.get('SECRET_KEY'))
-
+USR_CLIENT_SERVICE = os.environ.get('USR_CLIENT_SERVICE')
+PASS_CLIENT_SERVICE = os.environ.get('PASS_CLIENT_SERVICE')
+URL_CLIENT_SERVICE = base64.b64decode(os.environ.get('URL_CLIENT_SERVICE')).decode('utf-8')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
