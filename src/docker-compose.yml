@@ -1,0 +1,111 @@
+version: '3.7'
+
+services:
+
+  admin_serv:
+    environment:
+      SECRET_KEY: ${SECRET_KEY}
+      PATH_LOGS: ${PATH_LOGS}
+      PATH_ALERTA: ${PATH_ALERTA}
+      TOKEN_TELEGRAM: ${TOKEN_TELEGRAM}
+      CHAT_ID: ${CHAT_ID}
+      NAME_BD: ${NAME_BD}
+      USR_BD: ${USR_BD}
+      PASS_BD: ${PASS_BD}
+      HOSTDJ: ${HOSTDJ}
+      PORTDJ: ${PORTDJ}
+      DB_uno: ${DB_uno}
+      DB_dos: ${DB_dos}
+      SECRET_USRM: ${SECRET_USRM}
+      SECRET_PASSM: ${SECRET_PASSM} 
+      SECRET_URL_SERVICE: ${SECRET_URL_SERVICE}
+      SECRET_USR_SERVICE: ${SECRET_USR_SERVICE}
+      SECRET_PASS_SERVICE: ${SECRET_PASS_SERVICE}
+    build: ./contenedor_adminServ
+    restart: always
+    container_name: ssa_front_end
+    volumes:
+      - ./contenedor_adminServ/adminServ:/code
+      - ./contenedor_adminServ/path_plugins:/path_plugins
+      - ./contenedor_adminServ/LOGS_FRONT_END:/LOGS_FRONT_END
+    depends_on:
+      - bd_front_end
+    deploy:
+      resources:
+        limits:
+          cpus: "1"
+          memory: "850M"
+
+  admin_serv_back_end:
+    environment:
+      SECRET_KEY_BE: ${SECRET_KEY_BE}
+      PATH_LOGS_BE: ${PATH_LOGS_BE}
+      NAME_BD_BE: ${NAME_BD_BE}
+      USR_BD_BE: ${USR_BD_BE}
+      PASS_BD_BE: ${PASS_BD_BE}
+      HOSTDJ_BE: ${HOSTDJ_BE}
+      DB_AS: ${DB_AS}
+      PORTDJ_BE: ${PORTDJ_BE}
+      MASTER_USR_BE: ${MASTER_USR_BE}
+      MASTER_PASS_BE: ${SECRET_PASS_SERVICE}
+      USR_CLIENT_SERVICE_BE: ${USR_CLIENT_SERVICE_BE}
+      PASS_CLIENT_SERVICE_BE: ${PASS_CLIENT_SERVICE_BE}
+      URL_CLIENT_SERVICE_BE: ${URL_CLIENT_SERVICE_BE}
+    build: ./contenedor_admin_web_service
+    restart: always
+    container_name: ssa_back_end
+    volumes:
+      - ./contenedor_admin_web_service/service_adminServ:/code
+      - ./contenedor_admin_web_service/LOGS_BACK_END:/LOGS_BACK_END
+    depends_on:
+      - bd_back_end
+    deploy:
+      resources:
+        limits:
+          cpus: "2"
+          memory: "2G"
+      
+  bd_front_end:
+    image: mariadb
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: ${PASS_BD}
+      MYSQL_DATABASE: ${NAME_BD}
+    volumes:
+      - ./contenedor_adminServ/data:/var/lib/mysql
+
+  nginx_front_end:
+    image: nginx
+    restart: always
+    environment: 
+      - NGINX_HOST=front_end
+    volumes:
+      - ./contenedor_adminServ/nginx:/etc/nginx/conf.d
+      - ./contenedor_adminServ/adminServ/static:/static
+      - ./contenedor_adminServ/certs:/certs
+    depends_on:
+      - admin_serv
+    ports:
+      - 8080:443
+
+  bd_back_end:
+    image: mariadb
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: ${PASS_BD_BE}
+      MYSQL_DATABASE: ${NAME_BD_BE}
+    volumes:
+      - ./contenedor_admin_web_service/data:/var/lib/mysql
+
+  nginx_back_end:
+    image: nginx
+    restart: always
+    environment:
+      - NGINX_HOST=back_end
+    volumes:
+      - ./contenedor_admin_web_service/nginx:/etc/nginx/conf.d
+      - ./contenedor_admin_web_service/certs:/certs
+    depends_on:
+      - admin_serv_back_end
+    ports:
+      - 8000:443
