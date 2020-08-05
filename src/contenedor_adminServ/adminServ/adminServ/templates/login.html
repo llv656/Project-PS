@@ -1,0 +1,90 @@
+{% extends 'base.html' %}
+
+{% block titulo %}Login SSA{% endblock %}
+
+{% block estilos %}
+<link rel="stylesheet" href="/static/css/login.css">
+{% endblock %}
+{% block scripts %}
+<script src="/static/js/2pasos.js"></script>
+{% endblock %}
+
+{% block encabezado %}ADMINISTRACIÓN. .SEGURA. .DE. .SERVIDORES{% endblock %}
+
+{% block contenido %}
+
+<div class="col-xs-7" id="conexion">
+	<img src="/static/imgs/conexion3.gif" class="img-circle" id="img1" alt="Imagen ilustrativa de multiples nodos">
+</div>
+
+{% if autenticacion %}  	
+<form method="POST" action="/login/" class="col-xs-4">
+	{% csrf_token %}
+	<div class="registro">
+		<fieldset style="background-color:rgba(34,53,72,0.60); padding:15px;">
+			<legend><h1>Auténticate</h1></legend>
+			{% if errores %}
+			<div class="alert alert-danger" id="errorA"> {{ errores }} </div>
+			{% endif %}
+			<div class="form-group" style="padding:12px">
+				<label class="regis">Usuario Administrador:</label>
+				<input type="text" class="form-control" name="usuario" placeholder="usuario">
+			</div>
+
+			<div class="form-group" style="padding:12px">
+				<label class="regis">Contraseña Administrador:</label>
+				<input type="password" class="form-control" name="password" placeholder="Contraseña">
+			</div>
+			<div style="padding:12px">
+				<button type="submit" id="btnAcceder" class="btn btn-success">Ingresar</button>
+			</div>
+		</fieldset>
+	</div>
+</form>
+{% endif %}
+
+{% if multifactor %}
+<form method="POST" action="/multifactor/" class="col-xs-4">
+        {% csrf_token %}
+        <div class="registro">
+                <fieldset style="background-color:rgba(34,53,72,0.60); padding:15px;">
+                        <legend><h1>Autenticación multifactor</h1></legend>
+			{% if errores %}
+                        <div class="alert alert-danger" id="errorA"> {{ errores }} </div>
+			{% endif %}
+                        <div class="form-group" style="padding:12px">
+                                <label class="regis">Código:</label>
+                                <input type="text" class="form-control" name="codigo" placeholder="código">
+                        </div>
+                        <div style="padding:12px">
+                                <input type="submit" class="btn btn-success" value="INGRESAR">
+                        </div>
+                </fieldset>
+        </div>
+</form>
+{% endif %}
+
+{% if multifactorA %}
+<form method="POST" action="/multifactorA/" class="col-xs-4">
+        {% csrf_token %}
+        <div class="registro">
+                <fieldset style="background-color:rgba(34,53,72,0.60); padding:15px;">
+                        <legend><h1>Autenticación multifactor</h1></legend>
+			{% if errores %}
+                        <div class="alert alert-danger" id="errorA"> {{ errores }}</div>
+			{% endif %}
+                        <div class="form-group" style="padding:12px">
+                                <label class="regis">Código:</label>
+                                <input type="text" class="form-control" name="codigo" placeholder="código">
+                        </div>
+                        <div style="padding:12px">
+                                <input type="submit" class="btn btn-success" value="INGRESAR">
+                        </div>
+                </fieldset>
+        </div>
+</form>
+{% endif %}
+
+<div class="col-xs-1"></div>
+
+{% endblock %}

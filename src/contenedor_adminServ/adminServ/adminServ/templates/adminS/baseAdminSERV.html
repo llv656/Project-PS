@@ -1,0 +1,31 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <link href="https://fonts.googleapis.com/css?family=Artifika|Bungee+Inline|Codystar|Sonsie+One&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Monoton&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;1,800&display=swap" rel="stylesheet">
+    <title>{% block titulo %}Título{% endblock %}</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    {% block estilos %}{% endblock %}
+    {% block scripts %}{% endblock %}
+  </head>
+  <header class="jumbotron" style="opacity:0.9; background-color:rgb(50,50,50); padding-top:5px; padding-bottom:5px;">
+      <h3 id="administracion">{% block encabezado %}{% endblock %}</h3>
+  </header>
+
+  <body>
+    {% block area %}{% endblock %}
+    {% block contenido %}{% endblock %}
+  </body>
+  <footer class="footer font-small text-center pie">
+    <div>Universidad Veracruzana</div>
+    <div>Facultad de Estadística e informática</div>
+  </footer>
+
+</html>

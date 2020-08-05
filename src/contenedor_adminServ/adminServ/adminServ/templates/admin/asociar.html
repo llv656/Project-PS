@@ -1,0 +1,22 @@
+<form method="POST" action="/asociarAS/">
+        {% csrf_token %}
+        <div class="registro">
+                <fieldset  class="col-xs-8" style="background-color:rgba(34,53,72,0.60); padding:15px;">
+                        <legend class="tituloRegistro">Asociacion</legend>
+			{% if errores %}
+                        <div class="alert alert-danger" id="errorA"> {{ errores }} </div>
+			{% endif %}
+                        <div class="form-group" style="padding:12px">
+                                <label class="regis">Usuario Administrador:</label>
+                                <input type="text" class="form-control" name="usuario_admin" placeholder="usuario">
+                        </div>
+                        <div class="form-group" style="padding:12px">
+                                <label class="regis">IP Servidor:</label>
+                                <input type="text" class="form-control" name="IP_server" placeholder="IP">
+                        </div>
+                        <div style="padding:12px">
+                                <button type="submit" id="btnCrear" class="btn btn-success">Asociar</button>
+                        </div>
+                </fieldset>
+        </div>
+</form>
