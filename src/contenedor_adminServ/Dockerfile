@@ -31,6 +31,7 @@ RUN mkdir /start
 
 COPY ./start.sh /start
 RUN chmod 751 /start/start.sh
+RUN chmod 740 /LOGS_FRONT_END
 
 WORKDIR /code
 

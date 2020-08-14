@@ -9,8 +9,10 @@
 {% endblock %}
 
 {% block scripts %}
-<script src="{% static 'js/admin/navegacion.js' %}"></script>
 <script src="{% static 'js/admin/verificarC.js' %}"></script>
+<script src="{% static 'js/admin/metodo.js' %}"></script>
+<script src="{% static 'js/admin/metodoServidor.js' %}"></script>
+<script src="{% static 'js/admin/metodoAsociacion.js' %}"></script>
 {% endblock %}
 
 {% block area %}
@@ -48,14 +50,13 @@
 				</button>
 				<ul class="dropdown-menu" role="menu" style="background-color:rgba(255,255,255,0.0);">
 					<li><button type="button" class="btn btn-primary btn-block" id="perfil">Editar perfil</btn></li>
-					<li><button type="button" class="btn btn-primary btn-block" id="alertas">Activar alertas</btn></li>
 					<li><a class="btn btn-danger btn-block" role="button" href="{% url 'logout' %}" id="salir">Salir</a></li>
 				</ul>
 			</div>
 		</div>
 		<ul class="nav navbar-nav">
-			<li><a class="btn btn-link navbar-brand" role="button" href="{% url 'registro_administradores' %}" id="admin"><span class="glyphicon glyphicon-user"></span> Registrar Administrador</a></li>
-			<li><a class="btn btn-link navbar-brand" role="button" href="{% url 'registro_servidores' %}" id="server"><span class="glyphicon glyphicon-object-align-horizontal"></span> Registrar Servidor</a></li>
+			<li><a class="btn btn-link navbar-brand" role="button" href="{% url 'registro_administradores' %}" id="admin"><span class="glyphicon glyphicon-user"></span> Gestion Administradores</a></li>
+			<li><a class="btn btn-link navbar-brand" role="button" href="{% url 'registro_servidores' %}" id="server"><span class="glyphicon glyphicon-object-align-horizontal"></span> Gestion Servidores</a></li>
 			<li><a class="btn btn-link navbar-brand" role="button" href="{% url 'asociarAS' %}" id="asociacion"><span class="glyphicon glyphicon-random"></span>&nbsp;&nbsp;Asociar</a></li>
 		</ul>
 	</div>

@@ -2,13 +2,12 @@ from django.template import Template, Context
 from django.shortcuts import render, redirect
 from ingreso import models
 from adminServ.decoradores import *
+from adminServ import operaciones_ws, servicio_admin, servicio_server
+from collections import namedtuple
 import adminServ.inicio_sesion as back_end
 import adminServ.registro as registros
 import subprocess
-import os
-import base64
-import time
-from collections import namedtuple
+import os, base64
 
 Codigo_SESION = namedtuple('Codigo_SESION', 'codigo')
 csesion={}
@@ -74,7 +73,8 @@ def multifactor(request):
 		path_alerta = base64.b64decode(os.environ.get('PATH_ALERTA'))
 		TOKEN_TELEGRAM = base64.b64decode(os.environ.get('TOKEN_TELEGRAM'))
 		CHAT_ID = base64.b64decode(os.environ.get('CHAT_ID'))
-		subprocess.call([path_alerta, TOKEN_TELEGRAM, CHAT_ID, 'Codigo de verificacion:'+' '+codigo_multifactor('h')])
+		codigo = codigo_multifactor('h')
+		subprocess.call([path_alerta, TOKEN_TELEGRAM, CHAT_ID, 'Codigo de verificacion:'+' '+codigo])
 		return render(request, t, {'multifactor': ' '})
 	elif request.method == 'GET' and request.session.get('logueadoA', ):
 		return redirect('/bienvenida_adminA')
@@ -116,7 +116,7 @@ def multifactorA(request):
 			if codigo == codigo_multifactor('f'):
 				#solicitar tokens servidores
 				usuario_admin, paswd_admin = back_end.unwrap_llaves(request)
-				token_servers, llave_aes_token, nonce_token = registros.start_session_service_web(usuario_admin, paswd_admin)
+				token_servers, llave_aes_token, nonce_token = operaciones_ws.start_session_service_web(usuario_admin, paswd_admin)
 				#eliminar password del admin
 				respuestaM = redirect('/bienvenida_adminA')
 				respuestaM.delete_cookie('key3')
@@ -141,17 +141,23 @@ def bienvenida_adminA(request):
 		#recuperar tokens de acceso y pasar en formato json al monitor administradorAPI
 		usuario_admin, token_servers = back_end.unwrap_tokens(request)
 		#recuperar la informacion
-		info_monitoreo_servers = registros.return_info_server(usuario_admin.decode('utf-8'), token_servers.decode('utf-8'))
+		info_monitoreo_servers = operaciones_ws.return_info_server(usuario_admin.decode('utf-8'), token_servers.decode('utf-8'))
 		#interactuar con el template para mostar informacion 
 		c = {'monitor_servers':info_monitoreo_servers}
 		return render(request, t, c)
+
+@esta_logueadoA
+def server_connect(request):
+	if request.method == 'POST':
+		usuario_admin, token_servers = back_end.unwrap_tokens(request)
+		credenciales_server = operaciones_ws.regresar_credenciales(usuario_admin)
 
 @esta_logueado
 def registro_administradores(request):
 	t = 'admin/bienvenidaAdmin.html'
 	if request.method == 'GET':
 		return render(request, t, {'registroAd': ' '})
-	elif request.method == 'POST':
+	if request.method == 'POST':
 		user = request.POST.get('usuario', None)
 		nombre = request.POST.get('nombre', None)
 		apellidos = request.POST.get('apellidos', None)
@@ -159,21 +165,41 @@ def registro_administradores(request):
 		telegram_chatID = request.POST.get('telegram_chatID', None)
 		passwdP = request.POST.get('password', ' ')
 		vacio = ''
-		if nombre == vacio or apellidos == vacio or telegram_token == vacio or telegram_chatID == vacio or passwdP == vacio:
-			return render(request, t, {'registroAd': ' ', 'errores': 'Todos los campos deben ser completados.'}) 
-		elif registros.registroADMIN(user, nombre, apellidos, telegram_token, telegram_chatID, passwdP):
-			return redirect('/bienvenida_admin')
-		else:
-			return render(request, t, {'registroAd': ' ', 'errores': 'Administrador ya registrado.'}) #Error en el registro
-	elif request.method == 'PUT':
-		#verificar existencia
-		#almenos un campo debe ser completado
-		#si la contraseña se actualiza se debe de actualizar tambien la contraseña cifrada del API web service
-		pass
-	elif request.method == 'DELETE':
-		#verificar existencia
-		# se elimina el administrador de la BD y en el API el administrador y todos los servidores asociados
-		pass
+		if request.POST.get('crear', None) == 'crear':
+			if user == vacio or nombre == vacio or apellidos == vacio or telegram_token == vacio or telegram_chatID == vacio or passwdP == vacio:
+				return render(request, t, {'registroAd': ' ', 'errores': 'Todos los campos deben ser completados.'})
+			registro_administrador = registros.registroADMIN(user, nombre, apellidos, telegram_token, telegram_chatID, passwdP)
+			if registro_administrador[1]:
+				return redirect('/bienvenida_admin')
+			else:
+				return render(request, t, {'registroAd': ' ', 'errores': registro_administrador[0]}) #Error en el registro
+		elif request.POST.get('actualizar', None) == 'actualizar':
+			lista_modificaciones = []
+			if user != vacio:
+				if nombre != vacio or apellidos != vacio or telegram_token != vacio or telegram_chatID != vacio or passwdP != vacio:
+					datos = {'nombre': nombre, 'apellidos': apellidos, 'telegram_t': telegram_token, 'telegram_i': telegram_chatID, 'passwd': passwdP}
+					for valor in datos:
+						if datos.get(valor.__str__()) != None and datos.get(valor.__str__()) != '':
+							lista_modificaciones.append({valor: datos.get(valor)})
+
+					actualizacion = servicio_admin.modificar_administrador(user, lista_modificaciones, lista_campos=list(datos.keys()))
+					if actualizacion[1]:
+						return redirect('/bienvenida_admin')
+					else:
+						return render(request, t, {'registroAd': ' ', 'errores': actualizacion[0]})
+				else:
+					return render(request, t, {'registroAd': ' ', 'errores': 'Se debe modificar al menos un campo'})
+			else:
+				return render(request, t, {'registroAd': ' ', 'errores': 'Se debe especificar el usuario a modificar'})
+		elif request.POST.get('eliminar', None) == 'eliminar':
+			if not user == '' or user == None:
+				eliminar = servicio_admin.eliminar_administrador(user)
+				if eliminar[1]:
+					return redirect('/bienvenida_admin')
+				else:
+					return render(request, t, {'registroAd': ' ', 'errores': eliminar[0]})
+			else:
+				return render(request, t, {'registroAd': ' ', 'errores': 'Se debe especificar el usuario a eliminar'})
 
 @esta_logueado
 def registro_servidores(request):
@@ -181,24 +207,47 @@ def registro_servidores(request):
 	if request.method == 'GET':
 		return render(request, t, {'registroSe': ' '})
 	if request.method == 'POST':
+#		if servicio_server.verificar_IP(request.POST.get('IP_server', None)):
 		serverIP = request.POST.get('IP_server', None)
+#		else:
+#			return render(request, t, {'registroSe': ' ', 'errores': 'Ingrese una IP valida'})
 		user_server = request.POST.get('user_server', None)
 		pass_server = request.POST.get('pass_server', None)
 		vacio=''
-		if serverIP == vacio or user_server == vacio or pass_server == vacio:
-			return render(request, t, {'registroSe': ' ', 'errores': 'Todos los campos deben ser completados.'}) 
-		elif registros.registroSERVER(serverIP, user_server, pass_server):
-			return redirect('/bienvenida_admin')
-		else:
-			return render(request, t, {'registroSe': ' ', 'errores': 'Servidor ya registrado'})
-	if request.method == 'PUT':
-		#verificar existencia
-		#al menos un campo deber ser completado
-		pass
-	if request.method == 'DELETE':
-		#verificar existencia
-		#se elimina el servidor en la BD y en el API administrador
-		pass
+		if request.POST.get('crear_s', None) == 'crear_s':
+			if user_server == vacio or pass_server == vacio:
+				return render(request, t, {'registroSe': ' ', 'errores': 'Todos los campos deben ser completados.'}) 
+
+			registro_servidor = registros.registroSERVER(serverIP, user_server, pass_server)
+			if registro_servidor[1]:
+				return redirect('/bienvenida_admin')
+			else:
+				return render(request, t, {'registroSe': ' ', 'errores': registro_servidor[0]})
+		elif request.POST.get('actualizar_s', None) == 'actualizar_s':
+			if user_server == vacio and pass_server == vacio:
+				return render(request, t, {'registroSe': ' ', 'errores': 'Se debe modificar al menos un campo.'})
+
+			datos = {'user': user_server, 'pass': pass_server}
+			lista_modificaciones = []
+			for valor in datos:
+				if datos.get(valor.__str__()) != None and datos.get(valor.__str__()) != '':
+					lista_modificaciones.append({valor: datos.get(valor)})
+
+			actualizacion = servicio_server.modificar_servidor(serverIP, lista_modificaciones)
+			if actualizacion[1]:
+				return redirect('/bienvenida_admin')
+			else:
+				return render(request, t, {'registroSe': ' ', 'errores': actualizacion[0]})
+			#verificar existencia
+			#al menos un campo deber ser completado
+		elif request.POST.get('eliminar_s', None) == 'eliminar_s':
+			eliminar = servicio_server.eliminar_servidor(serverIP)
+			if eliminar[1]:
+				return redirect('/bienvenida_admin')
+			else:
+				return render(request, t, {'registroSe': ' ', 'errores': eliminar[0]})
+			#verificar existencia
+			#se elimina el servidor en la BD y en el API administrador
 
 @esta_logueado
 def asociarAS(request):
@@ -211,15 +260,33 @@ def asociarAS(request):
 		vacio=''
 		if ip_server == vacio or user_admin == vacio:
 			return render(request, t, {'asociacion': ' ', 'errores': 'Ambos campos deben ser completados.'})
+#		if not servicio_server.verificar_IP(ip_server):
+#			return render(request, t, {'asociacion': ' ', 'errores': 'Ingrese una IP valida.'})
+		if not servicio_server.existencia_servidor(ip_server):
+			return render(request, t, {'asociacion': ' ', 'errores': 'Servidor no registrado'}) #, no es posible crear asociacion.'})
+		if not servicio_admin.existencia_administrador(user_admin):
+			return render(request, t, {'asociacion': ' ', 'errores': 'Administrador no registrado'}) #, no es posible crear asociacion.'})
+
+		#Se crea asociacion, lo de arriba solo es verificacion
+		if request.POST.get('crear_as', None) == 'crear_as':
+			asociaciones = operaciones_ws.datos_asociaciones(ip_server)
+			if not asociaciones and not asociaciones.__repr__() == '[]':
+				return render(request, t, {'asociacion': ' ', 'errores': 'No fue posible realizar asociacion, intentelo mas tarde.'})
+			if operaciones_ws.verificar_asociacion(asociaciones, ip_server):
+				return render(request, t, {'asociacion': ' ', 'errores': 'Servidor ya asociado, no es posible crear asociacion.'})
+			else:
+				if operaciones_ws.asociar_servidores(user_admin, ip_server):
+					return redirect('/bienvenida_admin')
+				else:
+					return render(request, t, {'asociacion': ' ', 'errores': 'Error en el registro de la asociacion, intentelo mas tarde.'})
 		#verificar existencia del administrador y servidor
 		#verificar si servidor se encuentra ya asociado
-		elif registros.asociar_servidores(user_admin, ip_server):
-			return redirect('/bienvenida_admin')
-		else:
-			return render(request, t, {'asociacion': ' ', 'errores': 'Error en el registro de la asociacion, intentelo mas tarde.'})
-	elif request.method == 'DELETE':
+		elif request.POST.get('eliminar_as', None) == 'eliminar_as':
+			if operaciones_ws.eliminar_server(ip_server):
+				return redirect('/bienvenida_admin')
+			else:
+				return render(request, t, {'asociacion': ' ', 'errores': 'Error para eliminar asociacion, intente mas tarde.'})
 		#solo se elimina el servidor de la asociacion en el API
-		pass
 
 @esta_logueado
 def logout(request):
@@ -229,6 +296,7 @@ def logout(request):
 
 @esta_logueadoA
 def logoutA(request):
+	usuario_admin, token_servers = back_end.unwrap_tokens(request)
 	request.session.flush()
 	respuesta = redirect('/login')
 	respuesta.delete_cookie('key1')

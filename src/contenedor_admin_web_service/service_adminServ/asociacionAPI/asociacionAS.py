@@ -1,10 +1,14 @@
 from django.db.models import Prefetch
 from asociacionAPI.serializers import AdminSerializer
 from asociacionAPI.models import Admin
+from service_adminServ import settings as VE
+from urllib.request import urlopen
 import json
-import base64
-import os
-import requests
+import base64, os
+import urllib3, requests
+import logging
+
+logging.basicConfig(filename=VE.PATH_LOGS, filemode='a', format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.DEBUG)
 
 class return_server_admin():
 	queryset = Admin.objects.all()
@@ -14,8 +18,8 @@ class return_server_admin():
 		queryset = queryset.prefetch_related(Prefetch('servers'))
 		return queryset
 
-def return_server_adminJSON(instancia_admin, admin):
-	admin_serializer = instancia_admin.serializer_admin(Admin.objects.get(user_admin=admin)) #Admin.objects.get(user_admin='admin2')) #Pasar el nombre del administrador
+def return_server_adminJSON(instancia_admin_server, admin):
+	admin_serializer = instancia_admin_server.serializer_admin(Admin.objects.get(user_admin=admin)) #Admin.objects.get(user_admin='admin2')) #Pasar el nombre del administrador
 	admin_servers =	json.dumps(admin_serializer.data)
 	return json.loads(admin_servers)
 
@@ -35,24 +39,27 @@ def record_userE(url_record, token_master):
 	passwd = base64.b64encode(os.urandom(16)).decode('utf-8')
 	data={'username': user, 'password': passwd}
 	try:
-		solicitud = requests.post(url_record, headers=headers, data=data)
+		solicitud = requests.post(url_record, headers=headers, data=data, verify=False)
 		return user, passwd
-	except:
-                return False
+	except BaseException:
+		logging.exception('Error durante el registro del usuario efimero en el cliente')
+		return False
 
-def delete_userE(url_record, token_master, userE):
+def delete_userE(url_record, token_master, token_userE):
 	headers={'Authorization': 'Token %s' % token_master}
-	data={'username': userE}
+	data={'token': token_userE}
 	try:
-		solicitud = requests.delete(url_record, headers=headers, data=data)
+		solicitud = requests.delete(url_record, headers=headers, data=data, verify=False)
 		return True
-	except:
+	except BaseException:
+		logging.exception('Error el eliminar el usuario efimero en el cliente')
 		return False
 
 def return_token(url_autenticacion, username, passwd):
 	data={'username': username,'password': passwd}
 	try:
-		token_service = requests.post(url_autenticacion, data=data)
+		token_service = requests.post(url_autenticacion, data=data, verify=False)
 		return token_service.json()['token']
-	except:
+	except BaseException:
+		logging.exception('No se pudo obtener token del API cliente')
 		return False

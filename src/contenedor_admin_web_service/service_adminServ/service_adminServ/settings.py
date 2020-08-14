@@ -24,11 +24,11 @@ SECRET_KEY = base64.b64decode(os.environ.get('SECRET_KEY_BE'))
 USR_CLIENT_SERVICE = os.environ.get('USR_CLIENT_SERVICE_BE')
 PASS_CLIENT_SERVICE = os.environ.get('PASS_CLIENT_SERVICE_BE')
 URL_CLIENT_SERVICE = base64.b64decode(os.environ.get('URL_CLIENT_SERVICE_BE')).decode('utf-8')
+PATH_LOGS = base64.b64decode(os.environ.get('PATH_LOGS_BE'))
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
 ALLOWED_HOSTS = ['*']
-
 
 # Application definition
 

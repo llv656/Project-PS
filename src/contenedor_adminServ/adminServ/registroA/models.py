@@ -10,6 +10,6 @@ class Administradores(models.Model):
 	passcif_webservice = models.CharField(max_length=150, null=False, blank=False, default='pass web service')
 
 class Servidores(models.Model):
-	user_servidor = models.CharField(max_length=30, null=False, blank=False)
+	user_servidor = models.CharField(max_length=150, null=False, blank=False)
 	ip = models.GenericIPAddressField(null=False, blank=False, unique=True)
 	passcif_servidor = models.CharField(max_length=150, null=False, blank=False, default='pass server')

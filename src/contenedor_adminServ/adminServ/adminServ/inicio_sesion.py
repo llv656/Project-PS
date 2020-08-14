@@ -6,9 +6,13 @@ from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 import os
 import base64
 import requests
+import urllib3
+from urllib.request import urlopen
 import json
 from adminServ import settings
 import adminServ.registro as registros
+
+urllib3.disable_warnings()
 
 def get_client_ip(request):
     x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
@@ -63,12 +67,16 @@ def wrap_llaves(request, usuario, password):
     password_cifrado=cifrar(password.encode('utf-8'), llave_aes_passwd, iv_passwd)
     request.session['usuario'] = base64.b64encode(usuario_cifrado).decode('utf-8')
     request.session['password'] = base64.b64encode(password_cifrado).decode('utf-8')
-    return (base64.b64encode(llave_aes_usr).decode('utf-8'), base64.b64encode(iv_usr).decode('utf-8'), base64.b64encode(llave_aes_passwd).decode('utf-8'), base64.b64encode(iv_passwd).decode('utf-8'))
+    return (base64.b64encode(llave_aes_usr).decode('utf-8'), 
+        base64.b64encode(iv_usr).decode('utf-8'), 
+        base64.b64encode(llave_aes_passwd).decode('utf-8'), 
+        base64.b64encode(iv_passwd).decode('utf-8')
+        )
 
 def regresar_token(username, passwd):
     data={'username': username,'password': passwd}
     url_service = settings.URL_SERVICE + '/autenticacion/'
-    token_service = requests.post(url_service, data=data)
+    token_service = requests.post(url_service, data=data, verify=False)
     return token_service.json()['token']
 
 def unwrap_llaves(request):
@@ -79,7 +87,7 @@ def unwrap_llaves(request):
     usuario_cif_b64 = request.session.get('usuario', '')
     pwd_cif_b64 = request.session.get('password', '') 
     usuario_cif = base64.b64decode(usuario_cif_b64.encode('utf-8'))
-    pwd_cif = base64.b64decode(pwd_cif_b64) #.encode('utf-8'))
+    pwd_cif = base64.b64decode(pwd_cif_b64)
     llave_aes_usr = base64.b64decode(llave_aes_usr_b64.encode('utf-8'))
     llave_aes_pwd = base64.b64decode(llave_aes_pwd_b64.encode('utf-8'))
     iv_usr = base64.b64decode(iv_usr_b64.encode('utf-8'))
@@ -96,7 +104,7 @@ def unwrap_tokens(request):
     usuario_cif_b64 = request.session.get('usuario', '')
     tokens_cif_b64 = request.session.get('tokens_sessions', '') 
     usuario_cif = base64.b64decode(usuario_cif_b64.encode('utf-8'))
-    tokens_cif = base64.b64decode(tokens_cif_b64) #.encode('utf-8'))
+    tokens_cif = base64.b64decode(tokens_cif_b64)
     llave_aes_usr = base64.b64decode(llave_aes_usr_b64.encode('utf-8'))
     llave_aes_token = base64.b64decode(llave_aes_token_b64.encode('utf-8'))
     iv_usr = base64.b64decode(iv_usr_b64.encode('utf-8'))

@@ -23,6 +23,7 @@ SECRET_PASSM = os.environ.get('SECRET_PASSM')
 URL_SERVICE = base64.b64decode(os.environ.get('SECRET_URL_SERVICE')).decode('utf-8')
 USR_SERVICE = os.environ.get('SECRET_USR_SERVICE')
 PASS_SERVICE = os.environ.get('SECRET_PASS_SERVICE')
+PATH_LOGS = base64.b64decode(os.environ.get('PATH_LOGS'))
 
 PATH_PREFIX = os.environ.get('PATH_PREFIX', '')
 if PATH_PREFIX and not PATH_PREFIX.endswith('/'):

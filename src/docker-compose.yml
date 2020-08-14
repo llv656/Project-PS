@@ -30,11 +30,6 @@ services:
       - ./contenedor_adminServ/LOGS_FRONT_END:/LOGS_FRONT_END
     depends_on:
       - bd_front_end
-    deploy:
-      resources:
-        limits:
-          cpus: "1"
-          memory: "850M"
 
   admin_serv_back_end:
     environment:
@@ -59,12 +54,10 @@ services:
       - ./contenedor_admin_web_service/LOGS_BACK_END:/LOGS_BACK_END
     depends_on:
       - bd_back_end
-    deploy:
-      resources:
-        limits:
-          cpus: "2"
-          memory: "2G"
-      
+    networks:
+      - default
+      - prueba
+
   bd_front_end:
     image: mariadb
     restart: always
@@ -86,7 +79,7 @@ services:
     depends_on:
       - admin_serv
     ports:
-      - 8080:443
+      - 8081:443
 
   bd_back_end:
     image: mariadb
@@ -108,4 +101,8 @@ services:
     depends_on:
       - admin_serv_back_end
     ports:
-      - 8000:443
+      - 8001:443
+
+networks:
+  prueba:
+    external: true
