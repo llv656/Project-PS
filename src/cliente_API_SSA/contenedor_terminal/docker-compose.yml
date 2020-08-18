@@ -1,0 +1,23 @@
+version: '3.7'
+
+services:
+
+  ttyd_api:
+    environment:
+      USER: ${USER_t}
+      PASS: ${PASS_t}
+      PATH_CERT: ${PATH_CERT}
+      PATH_KEY: ${PATH_KEY}
+    build: .
+    restart: always
+    container_name: ttyd_cliente
+    volumes:
+      - ./certs:/certs
+    networks:
+      - privada_terminal
+    ports:
+      - 9696:7681
+
+networks:
+  privada_terminal:
+    external: true
