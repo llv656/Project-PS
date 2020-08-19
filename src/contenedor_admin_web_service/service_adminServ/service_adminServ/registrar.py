@@ -24,7 +24,7 @@ def registro_servidor(admin, ip_server):
 
 def recuperar_admin(admin):
 	try:
-		registro = models.Admin.objects.get(user_admin=admin)
+		models.Admin.objects.get(user_admin=admin)
 		return True
 	except:
 		return False
@@ -33,9 +33,9 @@ def eliminar_servidor(servidor):
 	try:
 		registro = models.Servers.objects.get(ip_server=servidor)
 		registro.delete()
-		return True
 	except:
-		logging.info('No se encontro servidor, por lo tanto no se elimino')
+		logging.info('No se encontro el servidor, por lo tanto no se elimino')
+	finally:
 		return True
 
 def eliminar_admin_servidores(admin, administrador_servidores):

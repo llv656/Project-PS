@@ -10,7 +10,7 @@ import logging
 
 logging.basicConfig(filename=VE.PATH_LOGS, filemode='a', format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.DEBUG)
 
-class return_server_admin():
+class Return_Server_Admin():
 	queryset = Admin.objects.all()
 	serializer_admin = AdminSerializer
 	def get_queryset(self):
@@ -18,8 +18,8 @@ class return_server_admin():
 		queryset = queryset.prefetch_related(Prefetch('servers'))
 		return queryset
 
-def return_server_adminJSON(instancia_admin_server, admin):
-	admin_serializer = instancia_admin_server.serializer_admin(Admin.objects.get(user_admin=admin)) #Admin.objects.get(user_admin='admin2')) #Pasar el nombre del administrador
+def return_server_admin_JSON(instancia_admin_server, admin):
+	admin_serializer = instancia_admin_server.serializer_admin(Admin.objects.get(user_admin=admin))
 	admin_servers =	json.dumps(admin_serializer.data)
 	return json.loads(admin_servers)
 
@@ -33,23 +33,23 @@ def return_server_admin_all(instancia_admin):
 		admin_server.append(admin_servers)
 	return json.loads(json.dumps(admin_server))
 
-def record_userE(url_record, token_master):
+def record_user_ephemeral(url_record, token_master):
 	headers={'Authorization': 'Token %s' % token_master}
 	user = base64.b64encode(os.urandom(16)).decode('utf-8')
 	passwd = base64.b64encode(os.urandom(16)).decode('utf-8')
 	data={'username': user, 'password': passwd}
 	try:
-		solicitud = requests.post(url_record, headers=headers, data=data, verify=False)
+		requests.post(url_record, headers=headers, data=data, verify=False)
 		return user, passwd
 	except BaseException:
 		logging.exception('Error durante el registro del usuario efimero en el cliente')
 		return False
 
-def delete_userE(url_record, token_master, token_userE):
+def delete_user_ephemeral(url_record, token_master, token_user_ephemeral):
 	headers={'Authorization': 'Token %s' % token_master}
-	data={'token': token_userE}
+	data={'token': token_user_ephemeral}
 	try:
-		solicitud = requests.delete(url_record, headers=headers, data=data, verify=False)
+		requests.delete(url_record, headers=headers, data=data, verify=False)
 		return True
 	except BaseException:
 		logging.exception('Error el eliminar el usuario efimero en el cliente')

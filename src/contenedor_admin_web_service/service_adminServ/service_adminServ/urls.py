@@ -19,10 +19,10 @@ from service_adminServ.views import *
 from rest_framework.authtoken import views
 
 urlpatterns = [
-    path('info_serversAPI/', info_serversAPI),
+    path('get_servers_info_api/', get_servers_info_api),
     path('autenticacion/', views.obtain_auth_token),
-    path('asociar_API/', asociar_API),
-    path('admin_recordAPI/', admin_recordAPI),
-    path('listar_AS/', listar_AS),
-    path('admin_sesionE/', admin_sesionE),
+    path('api_asociar_servidores/', api_asociar_servidores),
+    path('api_administradores/', api_administradores),
+    path('listar_asociaciones/', listar_asociaciones),
+    path('session_ephemeral_admin/', session_ephemeral_admin),
 ]

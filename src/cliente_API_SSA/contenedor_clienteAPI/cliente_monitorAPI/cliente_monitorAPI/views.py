@@ -64,7 +64,7 @@ def conectar_cliente(request):
 @authentication_classes([TokenAuthentication])
 @throttle_classes([UserRateThrottle])
 @permission_classes([IsAdminUser])
-def asociarAPI_cliente(request):
+def asociar_API_cliente(request):
 	if request.method == 'POST':
 
 		try:
