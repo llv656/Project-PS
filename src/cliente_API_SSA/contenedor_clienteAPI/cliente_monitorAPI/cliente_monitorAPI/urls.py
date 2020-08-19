@@ -21,6 +21,6 @@ from rest_framework.authtoken import views
 urlpatterns = [
     path('autenticacion_clienteAPI/', views.obtain_auth_token),
     path('monitor_server/', monitor_server),
-    path('asociarAPI_cliente/', asociarAPI_cliente)
+    path('asociar_API_cliente/', asociar_API_cliente),
 ]
 
