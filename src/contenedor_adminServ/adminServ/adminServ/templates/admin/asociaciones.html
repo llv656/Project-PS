@@ -1,0 +1,27 @@
+<div class="registro">
+        <fieldset  class="col-xs-8" style="background-color:rgba(34,53,72,0.60); padding:15px;">
+                <legend class="tituloRegistro">Asociaciones</legend>
+		<table class="table">
+                        <thead>
+                        <tr>
+                                <th class="campos_admin"><STRONG>Administrador</STRONG></th>
+				<th class="campos_admin"><STRONG>Servidores</STRONG></th>
+                        </tr>
+                        </thead>
+			{% for asociacion in asociaciones %}
+                        <tbody>
+                        <tr>
+                                <td class="datos_admin">{{ asociacion.user_admin }}</td>
+				<td class="datos_admin">
+				{% for servidores in asociacion.servers %}
+				<ul>
+					<li>{{ servidores }}</li>
+				</ul>
+				{% endfor %}	
+				</td>
+                        </tr>
+                        </tbody>
+                        {% endfor %}
+                </table>
+        </fieldset>
+</div>

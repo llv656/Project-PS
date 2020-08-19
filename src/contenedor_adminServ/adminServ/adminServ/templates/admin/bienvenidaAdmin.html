@@ -22,18 +22,38 @@
 </div>
 {% endif %}
 {% if registroAd %}
-<div class="jumbotron" id="registroAdmin">
+<div class="jumbotron registroAdmin">
 	{% include 'admin/registroAdmin.html' %}
 </div>
 {% endif %} 
+{% if mostrarAd %}
+<div class="jumbotron registroAdmin">
+	{% include 'admin/mostrarAdmin.html' %}
+</div>
+{% endif %}
 {% if registroSe %}
-<div class="jumbotron" id="registroServ">
+<div class="jumbotron registroServ">
         {% include 'admin/registroServ.html' %}
 </div>
-{% endif %} 
+{% endif %}
+{% if mostrarSe %}
+<div class="jumbotron registroServ">
+        {% include 'admin/mostrarServ.html' %}
+</div>
+{% endif %}
 {% if asociacion %}
 <div class="jumbotron" id="asociacionAS">
         {% include 'admin/asociar.html' %}
+</div>
+{% endif %}
+{% if mostrarAs %}
+<div class="jumbotron" id="asociacionAS">
+        {% include 'admin/asociaciones.html' %}
+</div>
+{% endif %}
+{% if sesiones_administradores %}
+<div class="jumbotron" id="asociacionAS">
+        {% include 'admin/sesiones.html' %}
 </div>
 {% endif %}
 {% endblock %}
@@ -49,8 +69,7 @@
 					<span class="caret"></span>
 				</button>
 				<ul class="dropdown-menu" role="menu" style="background-color:rgba(255,255,255,0.0);">
-					<li><button type="button" class="btn btn-primary btn-block" id="perfil">Editar perfil</btn></li>
-					<li><a class="btn btn-danger btn-block" role="button" href="{% url 'logout' %}" id="salir">Salir</a></li>
+					<li><a class="btn btn-danger btn-block" role="button" href="{% url 'logout' %}" id="salir"><STRONG>Salir</STRONG></a></li>
 				</ul>
 			</div>
 		</div>
@@ -58,6 +77,7 @@
 			<li><a class="btn btn-link navbar-brand" role="button" href="{% url 'registro_administradores' %}" id="admin"><span class="glyphicon glyphicon-user"></span> Gestion Administradores</a></li>
 			<li><a class="btn btn-link navbar-brand" role="button" href="{% url 'registro_servidores' %}" id="server"><span class="glyphicon glyphicon-object-align-horizontal"></span> Gestion Servidores</a></li>
 			<li><a class="btn btn-link navbar-brand" role="button" href="{% url 'asociar_administrador_servidor' %}" id="asociacion"><span class="glyphicon glyphicon-random"></span>&nbsp;&nbsp;Asociar</a></li>
+			<li><a class="btn btn-link navbar-brand" role="button" href="{% url 'sesiones_administradores' %}" id="admin"><span class="glyphicon glyphicon-log-in"></span> Sesiones</a></li>
 		</ul>
 	</div>
 

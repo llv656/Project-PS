@@ -11,4 +11,8 @@ $(document).ready(function(){
                 $("#eliminar_admin").val('eliminar');
                 return true;
         });
+	$("#btnMostrarAdmin").click(function(){
+                $("#mostrar_admin").val('mostrar');
+                return true;
+        });
 });

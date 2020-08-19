@@ -11,5 +11,9 @@ $(document).ready(function(){
                 $("#eliminar_servidor").val('eliminar_s');
                 return true;
         });
+	$("#btnMostrarServidor").click(function(){
+                $("#mostrar_servidor").val('mostrar_s');
+                return true;
+        });
 });
 

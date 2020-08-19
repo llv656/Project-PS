@@ -1,0 +1,21 @@
+<div class="registro">
+        <fieldset  class="col-xs-8" style="background-color:rgba(34,53,72,0.60); padding:15px;">
+                <legend class="tituloRegistro">Servidores</legend>
+                <table class="table">
+                        <thead>
+                        <tr>
+                                <th class="campos_admin"><STRONG>IP</STRONG></th>
+                        </tr>
+                        </thead>
+                        {% for servidor in servidores %}
+                        <tbody>
+                        <tr>
+                                {% for dato in servidor %}
+                                <td class="datos_admin">{{ dato }}</td>
+                                {% endfor %}
+                        </tr>
+                        </tbody>
+                        {% endfor %}
+                </table>
+        </fieldset>
+</div>

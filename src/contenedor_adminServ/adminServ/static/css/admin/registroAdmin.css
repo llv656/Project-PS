@@ -1,10 +1,10 @@
-#registroAdmin{
+.registroAdmin{
 	height:95vh; 
 	width:100; 
 	background-color:rgb(0,0,0);
 }
 
-#registroServ{
+.registroServ{
 	height:95vh; 
 	width:100; 
 	background-color:rgb(0,0,0);
@@ -50,5 +50,15 @@ fieldset {
 
 .regis {
 	font-size: 15px;
+        color: white;
+}
+
+.campos_admin {
+        font-size: 20px;
+        color: white;
+}
+
+.datos_admin {
+        font-size: 20px;
         color: white;
 }

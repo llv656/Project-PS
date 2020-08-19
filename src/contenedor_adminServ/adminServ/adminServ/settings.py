@@ -17,6 +17,7 @@ from datetime import datetime
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 VENTANA_TIEMPO_INTENTOS_LOGIN = 60
+VENTANA_TIEMPO_INTENTOS_MULTIFACTOR = 15
 INTENTOS_LOGIN = 5
 TOTAL_INTENTOS = 3
 SECRET_USRM = os.environ.get('SECRET_USRM')
@@ -38,7 +39,7 @@ if PATH_PREFIX and not PATH_PREFIX.endswith('/'):
 SECRET_KEY = os.environ.get('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['*']
 

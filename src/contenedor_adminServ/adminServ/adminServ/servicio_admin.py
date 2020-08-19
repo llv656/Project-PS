@@ -34,6 +34,21 @@ def modificar_administrador(admin, lista, lista_campos):
 		contexto="Administrador no existe"
 		return contexto, False
 
+def mostrar_administradores():
+	lista = []
+	lista_total_administradores = list(models.Administradores.objects.all())
+	cadena = ''
+	for usuario in lista_total_administradores:
+		datos = [
+				usuario.user_admin, 
+				usuario.nombre, 
+				usuario.apellidos, 
+				usuario.telegram_token, 
+				usuario.telegram_chatID, 
+			]
+		lista.append(datos)
+	return lista
+
 def eliminar_administrador(admin):
 	try:
 		registro = models.Administradores.objects.get(user_admin=admin)

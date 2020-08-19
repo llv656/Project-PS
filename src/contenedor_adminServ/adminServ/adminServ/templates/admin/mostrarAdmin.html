@@ -1,0 +1,25 @@
+<div class="registro">
+	<fieldset  class="col-xs-8" style="background-color:rgba(34,53,72,0.60); padding:15px;">
+		<legend class="tituloRegistro">Administradores</legend>
+		<table class="table">
+			<thead>
+			<tr>
+				<th class="campos_admin"><STRONG>usuario</STRONG></th>
+				<th class="campos_admin"><STRONG>nombre</STRONG></th>
+				<th class="campos_admin"><STRONG>apellidos</STRONG></th>
+				<th class="campos_admin"><STRONG>telegram token</STRONG></th>
+				<th class="campos_admin"><STRONG>telegram chat ID</STRONG></th>
+			</tr>
+			</thead>
+			{% for administrador in administradores %}
+			<tbody>
+			<tr>
+				{% for dato in administrador %}
+				<td class="datos_admin">{{ dato }}</td>
+				{% endfor %}
+			</tr>
+			</tbody>
+			{% endfor %}
+		</table>
+	</fieldset>
+</div>

@@ -30,6 +30,17 @@ def existencia_servidor(ip_server):
 	except:
 		return False
 	
+def mostrar_servidores():
+	lista = []
+	lista_total_servidores = list(models.Servidores.objects.all())
+	cadena = ''
+	for servidor in lista_total_servidores:
+		datos = [
+				servidor.ip, 
+			]
+		lista.append(datos)
+	return lista
+
 def modificar_servidor(ip_server, lista):
 	try:
 		registro = models.Servidores.objects.get(ip=ip_server)

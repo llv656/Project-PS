@@ -7,4 +7,8 @@ $(document).ready(function(){
                 $("#eliminar_asociacion").val('eliminar_as');
                 return true;
         });
+	$("#btnMostrarAsociacion").click(function(){
+                $("#mostrar_asociacion").val('mostrar_as');
+                return true;
+        });
 });

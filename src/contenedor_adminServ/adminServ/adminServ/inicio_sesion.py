@@ -26,6 +26,7 @@ def get_client_ip(request):
 def lista_negra(registro, timestamp, ip):
     registro.ultima_peticion = timestamp
     registro.intentos = registro.intentos+1
+    
     if registro.total_intentos > 0:
         registro.total_intentos = registro.total_intentos+1
         if registro.total_intentos >= settings.TOTAL_INTENTOS:
@@ -69,7 +70,7 @@ def dejar_pasar_peticion_multifactor(request):
         nuevo_Registro_IP.save()
         return True
     diferencia = (timestamp - registro.ultima_peticion).seconds
-    if diferencia > settings.VENTANA_TIEMPO_INTENTOS_LOGIN:
+    if diferencia > settings.VENTANA_TIEMPO_INTENTOS_MULTIFACTOR:
         registro.ultima_peticion = timestamp
         registro.intentos_multifactor = 1
         registro.save()
@@ -95,7 +96,7 @@ def verificar_lista_negra(request):
 def login(request, usuario):
     id_sesion = base64.b64encode(os.urandom(16)).decode('utf-8')
     ip = get_client_ip(request)
-    timestamp = registros.timestamp()
+    timestamp = datetime.datetime.now(datetime.timezone.utc)
     sesion = models.Sesiones(id_sesion=id_sesion, usuario=usuario, login=timestamp, logout=timestamp, ip=ip)
     request.session['id_sesion'] = id_sesion
     sesion.save()
@@ -103,7 +104,7 @@ def login(request, usuario):
 
 def logout(request):
     id_sesion = request.session.get('id_sesion', '')
-    timestamp = registros.timestamp()
+    timestamp = datetime.datetime.now(datetime.timezone.utc)
     try:
         sesion = models.Sesiones.objects.get(id_sesion=id_sesion)
     except BaseException:
@@ -127,11 +128,8 @@ def generar_llave():
 
 def wrap_llaves(request, usuario):
     llave_aes_usr, iv_usr = generar_llave()
-#    llave_aes_passwd, iv_passwd = generar_llave()
     usuario_cifrado=cifrar(usuario.encode('utf-8'), llave_aes_usr, iv_usr)
-#    password_cifrado=cifrar(password.encode('utf-8'), llave_aes_passwd, iv_passwd)
     request.session['usuario'] = base64.b64encode(usuario_cifrado).decode('utf-8')
-#    request.session['password'] = base64.b64encode(password_cifrado).decode('utf-8')
     return (base64.b64encode(llave_aes_usr).decode('utf-8'), 
         base64.b64encode(iv_usr).decode('utf-8'), 
         )
@@ -168,3 +166,18 @@ def unwrap_tokens(request):
     usuario = registros.decrypt(usuario_cif, llave_aes_usr, iv_usr)
     tokens = registros.decrypt(tokens_cif, llave_aes_token, iv_token)
     return usuario, tokens
+
+def sesion_administradores():
+    lista = []
+    lista_total_sesiones = list(models.Sesiones.objects.all())
+    cadena = ''
+    for sesion in lista_total_sesiones:
+        login = sesion.login
+        logout = sesion.logout
+        datos = [
+                    sesion.usuario, 
+                    str(login.hour)+':'+str(login.minute)+':'+str(login.second),
+                    str(logout.hour)+':'+str(logout.minute)+':'+str(logout.second)
+                ]
+        lista.append(datos)
+    return lista

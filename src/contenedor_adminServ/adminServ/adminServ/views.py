@@ -216,12 +216,15 @@ def registro_administradores(request):
 			else:
 				return render(request, t, {'registroAd': ' ', 'errores': eliminar[0]})
 		elif request.POST.get('mostrar', None) == 'mostrar':
-			if user == '':
-				return redirect('/mostrar_administradores')
+			return redirect('/mostrar_administradores')
+		return HttpResponse(status=401)
 
 @esta_logueado
 def mostrar_administradores(request):
-	pass
+	t = 'admin/bienvenidaAdmin.html'
+	if request.method == 'GET':
+		lista_administradores = servicio_admin.mostrar_administradores()
+		return render(request, t, {'mostrarAd': ' ', 'administradores': lista_administradores})
 
 @esta_logueado
 def registro_servidores(request):
@@ -267,6 +270,16 @@ def registro_servidores(request):
 				return redirect('/bienvenida_admin')
 			else:
 				return render(request, t, {'registroSe': ' ', 'errores': eliminar[0]})
+		elif request.POST.get('mostrar_s', None) == 'mostrar_s':
+			return redirect('/mostrar_servidores')
+		return HttpResponse(status=401)
+
+@esta_logueado
+def mostrar_servidores(request):
+	t = 'admin/bienvenidaAdmin.html'
+	if request.method == 'GET':
+		lista_servidores = servicio_server.mostrar_servidores()
+		return render(request, t, {'mostrarSe': ' ', 'servidores': lista_servidores})
 
 @esta_logueado
 def asociar_administrador_servidor(request):
@@ -278,6 +291,9 @@ def asociar_administrador_servidor(request):
 		user_admin = request.POST.get('usuario_admin', None)
 		ip_server = request.POST.get('IP_server', None)
 		vacio=''
+		if request.POST.get('mostrar_as', None) == 'mostrar_as':
+                        return redirect('/mostrar_asociaciones')
+
 		if ip_server == vacio or user_admin == vacio:
 			return render(request, t, {'asociacion': ' ', 'errores': 'Ambos campos deben ser completados.'})
 		lista_negra_caracteres = servicio_admin.CARACTERES_ESPECIALES
@@ -293,7 +309,7 @@ def asociar_administrador_servidor(request):
 			return render(request, t, {'asociacion': ' ', 'errores': 'Administrador no registrado'})
 
 		if request.POST.get('crear_as', None) == 'crear_as':
-			asociaciones = operaciones_ws.datos_asociaciones(ip_server)
+			asociaciones = operaciones_ws.datos_asociaciones()
 			if not asociaciones and not asociaciones.__repr__() == '[]':
 				return render(request, t, {'asociacion': ' ', 'errores': 'No fue posible realizar asociacion, intentelo mas tarde.'})
 			if operaciones_ws.verificar_asociacion(asociaciones, ip_server):
@@ -308,6 +324,21 @@ def asociar_administrador_servidor(request):
 				return redirect('/bienvenida_admin')
 			else:
 				return render(request, t, {'asociacion': ' ', 'errores': 'Error para eliminar asociacion, intente mas tarde.'})
+		return HttpResponse(status=401)
+
+@esta_logueado
+def mostrar_asociaciones(request):
+	t = 'admin/bienvenidaAdmin.html'
+	if request.method == 'GET':
+		asociaciones = operaciones_ws.datos_asociaciones()
+		return render(request, t, {'mostrarAs': ' ', 'asociaciones': asociaciones})
+
+@esta_logueado
+def sesiones_administradores(request):
+	t = 'admin/bienvenidaAdmin.html'
+	if request.method == 'GET':
+		sesiones = back_end.sesion_administradores()
+		return render(request, t, {'sesiones_administradores': ' ', 'sesiones': sesiones})
 
 @esta_logueado
 def logout(request):

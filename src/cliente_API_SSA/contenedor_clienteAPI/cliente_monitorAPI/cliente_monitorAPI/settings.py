@@ -28,7 +28,7 @@ USR_SERVICE = os.environ.get('USR_MASTER_SERVICE')
 SECRET_KEY = base64.b64decode(os.environ.get('SECRET_KEY'))
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['*']
 

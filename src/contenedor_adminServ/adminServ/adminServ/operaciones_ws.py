@@ -141,7 +141,7 @@ def eliminar_server(ip_server):
                 logging.exception('Error para eliminar al administrador en el API administrador')
                 return False
 
-def datos_asociaciones(ip_server):
+def datos_asociaciones():
 	token_service = back_end.regresar_token(VE.USR_SERVICE, VE.PASS_SERVICE)
 	headers = regresar_encabezado(token_service)
 	url_service = VE.URL_SERVICE+'/listar_asociaciones/'
