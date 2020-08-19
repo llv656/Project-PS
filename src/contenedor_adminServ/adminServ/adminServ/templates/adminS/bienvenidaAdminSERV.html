@@ -8,36 +8,20 @@
 {% endblock %}
 {% block scripts %}
 <script src="{% static 'js/adminS/refrescar.js' %}"></script>
-<script src="{% static 'js/adminS/terminal.js' %}"></script>
+<script src="{% static 'js/adminS/cargar.js' %}"></script>
 {% endblock %}
 
 {% block encabezado %}SERVIDORES ASOCIADOS{% endblock %}
 
 {% block area %}
-{% for monitor in monitor_servers %}
 <div>
 	<div id="myCarousel" class="carousel slide" data-ride="carousel">
- <!-- 		<div id="myCarousel" class="carousel slide" data-ride="carousel">
-Indicators -->
 	        <ol class="carousel-indicators">
         		<li data-target="#myCarousel" data-slide-to="0"  class="active"></li>
 	    	</ol>
-		<div id="monitor_seccion" class="carousel-inner">
+		<div class="carousel-inner">
 			<div class="item active">
-				<div class="registro">
-					<fieldset  class="col-xs-5" style="background-color:rgba(34,53,72,0.60); padding:15px;">
-						<legend class="tituloRegistro"><h1><p class="col-xs-10">Servidor: {{ monitor.servidor }}</p></h1>
-						<a class="btn btn-info col-xs-2" role="button" id="btnConectar" href={{ monitor.url_terminal }} target="_blank">Conectar</a></legend>
-						<div class="alert alert-info" id="credenciales_servidor" style="display:none">
-						<p> usuario: {{ monitor.usuario }}, contraseña: {{ monitor.password }}</p></div>
-		       		        	{% if errores %}
-						<div class="alert alert-danger" id="errorA"> {{ errores }} </div>
-		       			        {% endif %}
-						<p class="col-xs-4">PROCESADOR : {{ monitor.status.procesador }}</p>
-						<p class="col-xs-4">MEMORIA: {{ monitor.status.memoria }}</p>
-						<p class="col-xs-4">DISCO: {{ monitor.status.disco }}</p>
-					</fieldset>
-				</div>
+				<div id="monitor_seccion" class="registro"></div>
 			</div>
 			<a class="left carousel-control" href="#myCarousel" data-slide="prev">
 	      			<span class="glyphicon glyphicon-chevron-left"></span>
@@ -50,7 +34,6 @@ Indicators -->
 		</div>
 	</div>
 </div>
-{% endfor %}
 {% endblock %}
 
 {% block contenido %}
@@ -58,21 +41,16 @@ Indicators -->
 	<div class="container-fluid">
 		<div class="navbar-header">
 			<div class="btn-group dropup">
-				<a type="button" class="btn btn-link navbar-brand" role="button" href="{% url 'bienvenida_adminA' %}">SSA</a>
+				<a type="button" class="btn btn-link navbar-brand" role="button" href="{% url 'bienvenida_administrador_servidores' %}">SSA</a>
 				<button type="button" class="btn btn-primary btn-lg dropdown-toggle" id="btnNegro" data-toggle="dropdown" style="border-color:rgb(51,51,51);">
 					<span class="caret"></span>
 				</button>
 				<ul class="dropdown-menu" role="menu" style="background-color:rgba(255,255,255,0.0);">
 					<li><button type="button" class="btn btn-primary btn-block" id="perfil">Editar perfil</btn></li>
-					<li><a class="btn btn-danger btn-block" role="button" href="{% url 'logoutA' %}" id="salir">Salir</a></li>
+					<li><a class="btn btn-danger btn-block" role="button" href="{% url 'logout_admin_server' %}" id="salir">Salir</a></li>
 				</ul>
 			</div>
 		</div>
 	</div>
 </nav>
 {% endblock %}
-
-<!--            <ul class="nav navbar-nav">
-                        <li><a class="btn btn-link navbar-brand" role="button" href="{% url 'status_server' %}" id="admin"><span class="glyphicon glyphicon-object-align-horizonta$
-                        <li><a class="btn btn-link navbar-brand" role="button" href="{% url 'server_connect' %}" id="server"><span class="glyphicon glyphicon-console"></span> Ser$
-                </ul>-->

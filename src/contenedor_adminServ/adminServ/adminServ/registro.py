@@ -6,18 +6,22 @@ from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 import hashlib
 from adminServ import inicio_sesion as back_end
 from adminServ import servicio_admin, operaciones_ws
+from datetime import datetime
 import logging
 
 logging.basicConfig(filename=VE.PATH_LOGS, filemode='a', format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.DEBUG)
 
-def passwdHash(texto):
+def timestamp():
+	return datetime.now()
+
+def passwd_hash(texto):
 	salt=os.urandom(16)
-	valHash = hashlib.sha256(salt+texto).digest()
-	return valHash, salt
+	val_Hash = hashlib.sha256(salt+texto).digest()
+	return val_Hash, salt
 
 def decrypt(texto_cif, llave, nonce):
-	aesCipher = Cipher(algorithms.AES(llave), modes.CTR(nonce), backend=default_backend())
-	descifrador = aesCipher.decryptor()
+	aes_Cipher = Cipher(algorithms.AES(llave), modes.CTR(nonce), backend=default_backend())
+	descifrador = aes_Cipher.decryptor()
 	plano = descifrador.update(texto_cif)
 	descifrador.finalize()
 	return plano
@@ -34,9 +38,9 @@ def alerta_multifactor(request):
 	usuario = decrypt(usuario_cif, aes_usr, nonce_usr)
 	registro = models.Administradores.objects.get(user_admin=usuario.decode('utf-8'))
 	token_telegram = registro.telegram_token
-	chatID_telegram = registro.telegram_chatID
+	chat_ID_telegram = registro.telegram_chatID
 	
-	return token_telegram, chatID_telegram
+	return token_telegram, chat_ID_telegram
 
 def verificar_passwdHash(user, passwdh):
 	try:
@@ -52,20 +56,27 @@ def verificar_passwdHash(user, passwdh):
 	except:
 		return False
 
-def registroADMIN(user, nombre, apellidos, telegramT, telegramI, passwd):
-	hashp, salt = passwdHash(passwd.encode('utf-8'))
-	hashB64= base64.b64encode(hashp).decode('utf-8')
-	saltB64 = base64.b64encode(salt).decode('utf-8')
-	passwdhs = saltB64+'-$$-'+hashB64
+def registro_administrador(user, nombre, apellidos, telegram_token, telegram_id, passwd):
+	hashp, salt = passwd_hash(passwd.encode('utf-8'))
+	hash_b64= base64.b64encode(hashp).decode('utf-8')
+	salt_b64 = base64.b64encode(salt).decode('utf-8')
+	passwdhs = salt_b64+'-$$-'+hash_b64
 
-	keyAES_web_service, nonce_web_service = operaciones_ws.regresar_pass_service(passwd.encode('utf-8'))
+	key_aes_web_service, nonce_web_service = operaciones_ws.regresar_pass_service(passwd.encode('utf-8'))
 	passwd_web_service = base64.b64encode(os.urandom(16))
-	passwdCIF_web_service = back_end.cifrar(passwd_web_service, keyAES_web_service, nonce_web_service)
-	web_serviceKEYS = base64.b64encode(nonce_web_service).decode('utf-8')+'-$$-'+base64.b64encode(passwdCIF_web_service).decode('utf-8')
+	passwd_cif_web_service = back_end.cifrar(passwd_web_service, key_aes_web_service, nonce_web_service)
+	web_service_keys = base64.b64encode(nonce_web_service).decode('utf-8')+'-$$-'+base64.b64encode(passwd_cif_web_service).decode('utf-8')
 	try:
 		if operaciones_ws.registro_web_service(user, passwd_web_service.decode('utf-8')):
-			registroAd = models.Administradores(user_admin=user, nombre=nombre, apellidos=apellidos, telegram_token=telegramT, telegram_chatID=telegramI, passhash_admin=passwdhs, passcif_webservice=web_serviceKEYS)
-			registroAd.save()
+			registro_admin = models.Administradores(user_admin=user, 
+								nombre=nombre, 
+								apellidos=apellidos, 
+								telegram_token=telegram_token, 
+								telegram_chatID=telegram_id, 
+								passhash_admin=passwdhs, 
+								passcif_webservice=web_service_keys
+								)
+			registro_admin.save()
 			return '', True
 		else:
 			contexto="Error en el registro en el API del administrador"
@@ -74,23 +85,23 @@ def registroADMIN(user, nombre, apellidos, telegramT, telegramI, passwd):
 		contexto="Administrador ya registrado"
 		return contexto, False
 
-def registroSERVER(serverIP, user_server, pass_server):
-	keyAES_USR, nonce_PASS = operaciones_ws.regresar_pass_service(VE.SECRET_PASSM.encode('utf-8'))
-	passwd_cif = back_end.cifrar(pass_server.encode('utf-8'), keyAES_USR, nonce_PASS)
-	passwd_sec = base64.b64encode(nonce_PASS).decode('utf-8')+'-$$-'+base64.b64encode(passwd_cif).decode('utf-8')
+def registro_servidor(ip_server, user_server, pass_server):
+	key_aes, nonce_pass = operaciones_ws.regresar_pass_service(VE.SECRET_PASSM.encode('utf-8'))
+	passwd_cif = back_end.cifrar(pass_server.encode('utf-8'), key_aes, nonce_pass)
+	passwd_sec = base64.b64encode(nonce_pass).decode('utf-8')+'-$$-'+base64.b64encode(passwd_cif).decode('utf-8')
 
-	nonce_USR = os.urandom(16)
-	user_cif = back_end.cifrar(user_server.encode('utf-8'), keyAES_USR, nonce_USR)
-	user_sec = base64.b64encode(nonce_USR).decode('utf-8')+'-$$-'+base64.b64encode(user_cif).decode('utf-8')
+	nonce_usr = os.urandom(16)
+	user_cif = back_end.cifrar(user_server.encode('utf-8'), key_aes, nonce_usr)
+	user_sec = base64.b64encode(nonce_usr).decode('utf-8')+'-$$-'+base64.b64encode(user_cif).decode('utf-8')
 
 	try:
-		registroSe = models.Servidores.objects.get(ip=serverIP)
+		models.Servidores.objects.get(ip=ip_server)
 		contexto="Servidor ya registrado"
 		return contexto, False
 	except:
 		try:
-			registroSe = models.Servidores(user_servidor=user_sec, ip=serverIP, passcif_servidor=passwd_sec)
-			registroSe.save()
+			registro_server = models.Servidores(user_servidor=user_sec, ip=ip_server, passcif_servidor=passwd_sec)
+			registro_server.save()
 			return '', True
 		except BaseException:
 			logging.exception('Error en registro de la base de datos')

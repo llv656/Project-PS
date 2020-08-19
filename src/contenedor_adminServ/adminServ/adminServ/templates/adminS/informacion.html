@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <title>Informacion Servidores</title>
+  </head>
+  <script src="/static/js/adminS/terminal.js"></script>
+  <link rel="stylesheet" href="/static/css/adminS/bienvenidaAdmin.css">
+
+  {% for monitor in monitor_servers %}
+  <div class="container">
+        <fieldset style="background-color:rgba(34,53,72,0.60); padding:15px;">
+                <legend class="tituloRegistro"><h1><p class="col-xs-10">Servidor: {{ monitor.servidor }}</p></h1>
+                <a class="btn btn-info col-xs-2" role="button" id="btnConectar" href={{ monitor.url_terminal }} target="_blank">Conectar</a></legend>
+                <div class="alert alert-info col-xs-12" id="credenciales_servidor" style="display:none">
+		<STRONG class="col-xs-1"> usuario: </STRONG><p class="col-xs-5">{{ monitor.usuario }}</p>
+		<STRONG class="col-xs-1">contraseña: </STRONG><p class="col-xs-5">{{ monitor.password }}</p></span></div>
+                {% if errores %}
+                <div class="alert alert-danger" id="errorA"> {{ errores }} </div>
+                {% endif %}
+                <p class="col-xs-4">PROCESADOR : {{ monitor.status.procesador }}</p>
+                <p class="col-xs-4">MEMORIA: {{ monitor.status.memoria }}</p>
+                <p class="col-xs-4">DISCO: {{ monitor.status.disco }}</p>
+        </fieldset>
+  </div>
+  {% endfor %}
+</html>
+

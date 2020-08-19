@@ -1,6 +1,6 @@
 body {
         height: 50vh;
-        weidth: 100%;
+        width: 100%;
         background-color:rgb(50,50,50);
         background-blend-mode: soft-light;
         background-image: url("/static/imgs/conexion2.gif");
@@ -21,7 +21,7 @@ h3 {
 
 #bienvenida {
 	height: 95vh;
-	weidth: 100%; 
+	width: 100%; 
 	background-image: url("/static/imgs/inicioAdmin3.gif");
 	color: white;
 	background-color: rgb(71,99,127);

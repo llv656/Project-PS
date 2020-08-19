@@ -11,7 +11,7 @@ h1 {
 
 #bienvenida {
 	height: 95vh;
-	weidth: 100%; 
+	width: 100%; 
 	background-image: url("/static/imgs/inicioAdmin8.gif");
 	color: white;
 	background-color: rgb(71,99,127);

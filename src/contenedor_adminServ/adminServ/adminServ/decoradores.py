@@ -24,7 +24,7 @@ def dos_pasos(view):
             return redirect('/login')
     return interna
 
-def esta_logueadoA(view):
+def esta_logueado_administrador_servidores(view):
     def interna(request, *args, **kwargs):
         if request.session.get('logueadoA', False):
             return view(request, *args, **kwargs)
@@ -32,7 +32,7 @@ def esta_logueadoA(view):
             return redirect('/login')
     return interna
 
-def dos_pasosA(view):
+def dos_pasos_administrador_servidores(view):
     def interna(request, *args, **kwargs):
         if request.session.get('autenticadoA', False):
             return view(request, *args, **kwargs)

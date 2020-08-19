@@ -20,7 +20,7 @@ h1 {
 
 body {
 	height: 50vh;
-	weidth: 100%;
+	width: 100%;
 	background-color:rgb(50,40,25);
 	background-blend-mode: soft-light;
 	background-image: url("/static/imgs/fondoViwart.jpg");

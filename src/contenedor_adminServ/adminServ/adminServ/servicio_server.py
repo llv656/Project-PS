@@ -1,5 +1,4 @@
 from adminServ import inicio_sesion as back_end
-from adminServ import registro as registros
 from adminServ import operaciones_ws
 from adminServ import settings as VE
 from adminServ.modificar import modificar_campos
@@ -9,30 +8,31 @@ import logging
 
 logging.basicConfig(filename=VE.PATH_LOGS, filemode='a', format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.DEBUG)
 
-def verificar_IP(ip_server):
+def verificar_ip(ip_server):
 	if len(ip_server.split('.')) == 4:
-		for num in ip_server.split('.'):
-			try:
-				if int(num) > 0 and int(num) < 256:
-					pass
-				else:
-					return False
-			except:
-				return False
-		return True
+		pass
 	else:
 		return False
+	for num in ip_server.split('.'):
+		try:
+			if int(num) > 0 and int(num) < 256:
+				pass
+			else:
+				return False
+		except:
+			return False
+	return True
 
-def existencia_servidor(serverIP):
+def existencia_servidor(ip_server):
 	try:
-		registro = models.Servidores.objects.get(ip=serverIP)
+		models.Servidores.objects.get(ip=ip_server)
 		return True
 	except:
 		return False
 	
-def modificar_servidor(serverIP, lista):
+def modificar_servidor(ip_server, lista):
 	try:
-		registro = models.Servidores.objects.get(ip=serverIP)
+		registro = models.Servidores.objects.get(ip=ip_server)
 		if modificar_campos.actualizar_campos_server(registro, lista):
 			return '', True
 		else:
