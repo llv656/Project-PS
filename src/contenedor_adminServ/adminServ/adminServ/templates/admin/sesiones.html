@@ -1,0 +1,23 @@
+<div class="registro">
+        <fieldset  class="col-xs-8" style="background-color:rgba(34,53,72,0.60); padding:15px;">
+                <legend class="tituloRegistro">Sesiones</legend>
+                <table class="table">
+                        <thead>
+                        <tr>
+                                <th class="campos_admin"><STRONG>Usuario</STRONG></th>
+                                <th class="campos_admin"><STRONG>Login</STRONG></th>
+                                <th class="campos_admin"><STRONG>Logout</STRONG></th>
+                        </tr>
+                        </thead>
+                        {% for sesion in sesiones %}
+                        <tbody>
+                        <tr>
+                                {% for dato in sesion %}
+                                <td class="datos_admin">{{ dato }}</td>
+                                {% endfor %}
+                        </tr>
+                        </tbody>
+                        {% endfor %}
+                </table>
+        </fieldset>
+</div>
